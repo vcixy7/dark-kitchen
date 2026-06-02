@@ -1,0 +1,91 @@
+<div class="cupons-modal-bg">
+  <div class="cupons-modal">
+    <div class="cupons-header">
+      <div>
+        <p class="cupons-eyebrow">Gestão</p>
+        <h2>Cupons de Desconto</h2>
+      </div>
+      <button class="close-btn" type="button" (click)="fechar.emit()">×</button>
+    </div>
+
+    <div class="cupons-scroll-area">
+      <button class="novo-cupom-btn" type="button" (click)="abrirNovoCupom()">+ Novo Cupom</button>
+
+      <div *ngIf="modoNovo || cupomEditando" class="cupom-form">
+        <h3>{{ modoNovo ? 'Novo Cupom' : 'Editar Cupom' }}</h3>
+
+        <label>
+          Código
+          <input [(ngModel)]="formulario.codigo" placeholder="EX: FRETE10" />
+        </label>
+
+        <label>
+          Tipo de desconto
+          <select [(ngModel)]="formulario.tipo">
+            <option value="porcentagem">Porcentagem</option>
+            <option value="valor">Valor fixo</option>
+          </select>
+        </label>
+
+        <label>
+          Desconto
+          <input type="number" min="1" step="0.01" [(ngModel)]="formulario.valor" />
+        </label>
+
+        <label>
+          Pedido mínimo
+          <input type="number" min="0" step="0.01" [(ngModel)]="formulario.minimoPedido" />
+        </label>
+
+        <label>
+          Data de expiração
+          <input type="date" [(ngModel)]="formulario.dataExpiracao" />
+        </label>
+
+        <label class="checkbox-row">
+          Ativar imediatamente
+          <input type="checkbox" [(ngModel)]="formulario.ativo" />
+        </label>
+
+        <p *ngIf="mensagemErro" class="erro-msg">{{ mensagemErro }}</p>
+
+        <div class="form-actions">
+          <button class="btn-salvar" type="button" (click)="salvarCupom()">Salvar</button>
+          <button class="btn-cancelar" type="button" (click)="cancelarEdicao()">Cancelar</button>
+        </div>
+      </div>
+
+      <div *ngIf="!modoNovo && !cupomEditando" class="cupons-lista">
+        <div *ngFor="let cupom of cupons" class="cupom-card">
+          <div>
+            <div class="cupom-header-row">
+              <h3>{{ cupom.codigo }}</h3>
+              <span class="badge" [class.badge-ativo]="getStatusCupom(cupom) === 'Ativo'" [class.badge-inativo]="getStatusCupom(cupom) !== 'Ativo'">
+                {{ getStatusCupom(cupom) }}
+              </span>
+            </div>
+            <p class="cupom-descricao">
+              {{ cupom.tipo === 'porcentagem' ? 'Desconto percentual' : 'Desconto em valor' }}
+              · {{ formatarValor(cupom) }}
+            </p>
+            <p class="cupom-meta">Pedido mínimo: R$ {{ cupom.minimoPedido.toFixed(2) }}</p>
+            <p class="cupom-meta">Expira em: {{ cupom.dataExpiracao || 'Sem data' }}</p>
+          </div>
+
+          <div class="cupom-actions">
+            <button type="button" (click)="editarCupom(cupom)">Editar</button>
+            <button type="button" (click)="alternarAtivo(cupom)">
+              {{ cupom.ativo ? 'Desativar' : 'Ativar' }}
+            </button>
+            <button type="button" (click)="excluirCupom(cupom)">Excluir</button>
+          </div>
+        </div>
+
+        <div *ngIf="!cupons.length" class="empty-state">
+          <p>Nenhum cupom criado ainda.</p>
+          <span>Cadastre um cupom para testar promoções e descontos.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

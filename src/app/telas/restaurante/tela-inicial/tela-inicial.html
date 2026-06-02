@@ -1,0 +1,135 @@
+<section class="restaurante-root">
+  <header class="restaurante-header">
+    <div>
+      <p class="header-kicker">Dashboard do restaurante</p>
+      <div class="header-title-group">
+        <h1>Painel do Restaurante</h1>
+        <p>Gerencie pedidos, ofertas e o fluxo da cozinha em um só lugar.</p>
+      </div>
+      <div class="header-meta">
+        <span class="meta-pill">⏱️ Atualização em tempo real</span>
+        <span class="meta-pill">{{ pedidosAtivos.length }} pedidos ativos</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" type="button" (click)="abrirProdutos()">Produtos</button>
+      <button class="header-btn" type="button" (click)="abrirCupons()">Cupons</button>
+      <button class="header-btn" type="button" (click)="abrirPerfil()">Perfil</button>
+      <button class="header-btn sair" type="button" (click)="sairDaConta()">Sair</button>
+    </div>
+  </header>
+
+  <app-produtos-restaurante *ngIf="mostrarProdutos" (fechar)="fecharProdutos()"></app-produtos-restaurante>
+  <app-cupons-restaurante *ngIf="mostrarCupons" (fechar)="fecharCupons()"></app-cupons-restaurante>
+  <app-perfil-restaurante *ngIf="mostrarPerfil" (salvar)="fecharPerfil()"></app-perfil-restaurante>
+
+  <div class="dashboard-shell" *ngIf="!mostrarPerfil">
+    <section class="overview-panel">
+      <div class="overview-card highlight">
+        <span class="resumo-label">Pedidos Hoje</span>
+        <strong class="resumo-value">{{ pedidosHoje }}</strong>
+        <small>Pedidos registrados no dia</small>
+      </div>
+      <div class="overview-card">
+        <span class="resumo-label">Em Preparo</span>
+        <strong class="resumo-value">{{ pedidosPendentes }}</strong>
+        <small>Prontos para sair da cozinha</small>
+      </div>
+      <div class="overview-card">
+        <span class="resumo-label">Prontos</span>
+        <strong class="resumo-value">{{ pedidosProntos }}</strong>
+        <small>Pedidos aguardando entrega</small>
+      </div>
+      <div class="overview-card">
+        <span class="resumo-label">Total do Dia</span>
+        <strong class="resumo-value total">R$ {{ faturamentoHoje.toFixed(2) }}</strong>
+        <small>Somatório do valor registrado</small>
+      </div>
+    </section>
+
+    <section class="control-panel">
+      <div class="search-box">
+        <span class="search-icon">🔎</span>
+        <input
+          type="text"
+          placeholder="Buscar por código, cliente ou endereço"
+          [(ngModel)]="termoBusca"
+        />
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Filtrar:</span>
+        <button
+          type="button"
+          *ngFor="let filtro of filtrosDisponiveis"
+          class="filter-chip"
+          [class.active]="filtroStatus === filtro"
+          (click)="filtroStatus = filtro"
+        >
+          {{ filtro }}
+        </button>
+      </div>
+    </section>
+
+    <section class="orders-section">
+      <div class="section-heading">
+        <div>
+          <p class="header-kicker">Fila da cozinha</p>
+          <h2>Pedidos Ativos</h2>
+        </div>
+        <span class="orders-count">{{ pedidosFiltrados.length }} visualizados</span>
+      </div>
+
+      <div *ngIf="pedidosFiltrados.length === 0" class="empty-state">
+        <h3>Nenhum pedido encontrado</h3>
+        <p>Tente ajustar os filtros ou buscar por outro cliente.</p>
+      </div>
+
+      <article *ngFor="let pedido of pedidosFiltrados" class="pedido-card">
+        <div class="pedido-header">
+          <div>
+            <span class="pedido-codigo">Pedido #{{ pedido.codigo }}</span>
+            <span class="pedido-hora">{{ pedido.hora }}</span>
+          </div>
+          <span class="status-badge" [ngClass]="pedido.status.replace(' ', '-').toLowerCase()">
+            {{ pedido.status }}
+          </span>
+        </div>
+
+        <div class="pedido-grid">
+          <div class="info-block">
+            <span class="info-label">Cliente</span>
+            <span class="info-value">{{ pedido.cliente }}</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Telefone</span>
+            <span class="info-value">{{ pedido.telefone }}</span>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Endereço</span>
+            <span class="info-value">{{ pedido.endereco }}</span>
+          </div>
+        </div>
+
+        <div class="items-block">
+          <h4>Itens do Pedido</h4>
+          <div class="item-row" *ngFor="let item of pedido.itens">
+            <span>{{ item.qtd }}x {{ item.nome }}</span>
+            <strong>R$ {{ item.preco.toFixed(2) }}</strong>
+            <button class="delete-item-btn" type="button" (click)="excluirPrato(pedido, item)">Excluir</button>
+          </div>
+        </div>
+
+        <div class="order-footer">
+          <div>
+            <span class="footer-label">Total</span>
+            <strong class="footer-total">R$ {{ calcularTotal(pedido.itens) }}</strong>
+          </div>
+          <button class="pedido-acao-btn" type="button" (click)="processarPedido(pedido)">
+            {{ textoAcao(pedido) }}
+          </button>
+        </div>
+      </article>
+    </section>
+  </div>
+</section>

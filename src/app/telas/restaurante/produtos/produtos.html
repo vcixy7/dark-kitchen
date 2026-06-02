@@ -1,0 +1,95 @@
+<div class="produtos-modal-bg">
+  <div class="produtos-modal">
+    <div class="produtos-header">
+      <h2>Gerenciar Produtos</h2>
+      <button class="close-btn" (click)="fechar.emit()">×</button>
+    </div>
+
+    <div class="produtos-scroll-area">
+      <button class="novo-produto-btn" (click)="abrirNovoProduto()">+ Novo Produto</button>
+
+      <div *ngIf="produtoEditando" class="produto-form">
+        <h3>{{ modoNovo ? 'Novo Produto' : 'Editar Produto' }}</h3>
+        <label>
+          Nome
+          <input [(ngModel)]="produtoEditando.nome" placeholder="Ex: Burger Premium" />
+        </label>
+        <label>
+          Descrição
+          <input [(ngModel)]="produtoEditando.descricao" placeholder="Ex: Hambúrguer com cheddar e bacon" />
+        </label>
+        <label>
+          Categoria
+          <select [(ngModel)]="produtoEditando.categoria">
+            <option *ngFor="let categoria of categoriasDisponiveis" [value]="categoria">
+              {{ categoria }}
+            </option>
+          </select>
+        </label>
+        <label>
+          Preço
+          <input
+            type="text"
+            inputmode="decimal"
+            [ngModel]="precoTexto"
+            (ngModelChange)="atualizarPrecoTexto($event)"
+            placeholder="0.00"
+          />
+        </label>
+
+        <div class="imagem-box">
+          <label>
+            Foto do produto
+            <input type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" (change)="onArquivoSelecionado($event)" />
+          </label>
+          <p class="helper-text">Você pode exportar a foto do seu dispositivo aqui. Se preferir, cole uma URL válida abaixo.</p>
+          <label>
+            URL da imagem
+            <input
+              [ngModel]="produtoEditando.imagem"
+              (ngModelChange)="atualizarImagemUrl($event)"
+              placeholder="https://site.com/imagem.jpg"
+            />
+          </label>
+          <p *ngIf="imagemErro" class="erro-imagem">{{ imagemErro }}</p>
+        </div>
+
+        <label class="checkbox-row">
+          Disponível
+          <input type="checkbox" [(ngModel)]="produtoEditando.disponivel" />
+        </label>
+
+        <div class="form-actions">
+          <button class="btn-salvar" (click)="salvarProduto()">Salvar</button>
+          <button class="btn-cancelar" (click)="cancelarEdicao()">Cancelar</button>
+        </div>
+      </div>
+
+      <div *ngIf="!produtoEditando">
+        <div *ngFor="let produto of produtos" class="produto-card">
+          <img
+            [src]="imagemComFallback(produto)"
+            [alt]="produto.nome"
+            (error)="handleImagemErro(produto)"
+          />
+          <div class="produto-info">
+            <h4>{{ produto.nome }}</h4>
+            <p>{{ produto.categoria }}</p>
+            <p>{{ produto.descricao }}</p>
+            <p class="preco">R$ {{ produto.preco.toFixed(2) }}</p>
+            <span class="disponivel" [class.indisponivel]="!produto.disponivel">
+              {{ produto.disponivel ? 'Disponível' : 'Indisponível' }}
+            </span>
+          </div>
+          <div class="produto-actions">
+            <button (click)="editarProduto(produto)">Editar</button>
+            <button (click)="excluirProduto(produto)">Excluir</button>
+            <button (click)="alternarDisponibilidade(produto)">
+              {{ produto.disponivel ? 'Tornar Indisponível' : 'Tornar Disponível' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

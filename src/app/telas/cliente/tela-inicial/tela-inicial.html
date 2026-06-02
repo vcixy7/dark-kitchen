@@ -1,0 +1,355 @@
+<div class="dashboard-container" id="carrinho-anchor">
+  
+  <div class="top-bar" *ngIf="etapaFluxo !== 'perfil'">
+    <div>
+      <h1 class="main-title">DeliveryApp</h1>
+      <p class="subtitle">Os melhores pratos na sua porta</p>
+    </div>
+    <div class="header-actions">
+      <button class="header-action-btn" type="button" (click)="irParaCarrinho()">
+        <span class="action-icon">🛒</span> <span class="header-action-label">Carrinho</span>
+      </button>
+      <button class="header-action-btn" type="button" (click)="abrirPerfil()">
+        <span class="action-icon">👤</span> <span class="header-action-label">Perfil</span>
+      </button>
+      <button class="header-action-btn header-action-btn--logout" type="button" (click)="sairDaConta()">
+        <span class="action-icon">⎋</span> <span class="header-action-label">Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="top-bar" *ngIf="etapaFluxo === 'perfil'" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <button (click)="voltarDoCarrinho()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #1e293b;" aria-label="Voltar">←</button>
+      <div>
+        <h1 class="main-title" style="font-size: 22px; margin: 0;">Meu Perfil</h1>
+        <p class="subtitle" style="margin: 0;">Gerencie suas informações</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-action-btn header-action-btn--logout" type="button" style="background-color: #ff3b30; color: white; padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 6px;" (click)="sairDaConta()">
+        <span>↳</span> <span style="font-weight: 600;">Sair</span>
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="etapaFluxo === 'home'">
+    <div *ngIf="!restauranteSelecionado">
+      <div class="search-box" style="margin-bottom: 20px;">
+        <input type="text" class="search-input" placeholder="Buscar restaurantes pelo nome..." [(ngModel)]="termoPesquisa" />
+      </div>
+
+      <div class="chips-scroll">
+        <div *ngFor="let cat of categorias" class="category-chip" [class.active]="categoriaSelecionada === cat" (click)="selecionarCategoria(cat)">
+          {{ cat }}
+        </div>
+      </div>
+
+      <div class="restaurants-grid">
+        <div class="restaurant-card" *ngFor="let resto of restaurantesFiltrados" (click)="selecionarRestaurante(resto)">
+          <div class="image-box">
+            <img [src]="resto.imagem" [alt]="resto.nome">
+            <span class="rating-badge">★ {{ resto.nota }}</span>
+          </div>
+          <div class="card-details">
+            <h3 class="restaurant-name">{{ resto.nome }}</h3>
+            <p class="restaurant-category">{{ resto.categoria }}</p>
+            <div class="meta-row">
+              <span>{{ resto.tempo }}</span>
+              <span [class.free-delivery]="resto.taxa === 0">
+                {{ resto.taxa === 0 ? 'Entrega Grátis' : (resto.taxa | currency:'BRL':'symbol':'1.2-2') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="restauranteSelecionado">
+      <button class="btn-back-list" (click)="voltarParaLista()">← Voltar para restaurantes</button>
+      
+      <div class="menu-header-banner">
+        <img [src]="restauranteSelecionado.imagem" [alt]="restauranteSelecionado.nome" class="banner-img">
+        <div>
+          <h2 class="menu-title">{{ restauranteSelecionado.nome }}</h2>
+          <p class="restaurant-category" style="margin: 0;">{{ restauranteSelecionado.categoria }}</p>
+          <div class="menu-meta-badges">
+            <span>★ {{ restauranteSelecionado.nota }}</span> <span>•</span>
+            <span>{{ restauranteSelecionado.tempo }}</span> <span>•</span>
+            <span [class.free-delivery]="restauranteSelecionado.taxa === 0">
+              {{ restauranteSelecionado.taxa === 0 ? 'Entrega Grátis' : 'Taxa: ' + (restauranteSelecionado.taxa | currency:'BRL':'symbol':'1.2-2') }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="products-stack">
+        <div class="product-horizontal-card" *ngFor="let prod of restauranteSelecionado.cardapio" [class.disabled-card]="!prod.disponivel">
+          <div class="product-left">
+            <div class="thumb-container">
+              <img [src]="prod.imagem" [alt]="prod.nome">
+              <span class="alta-badge" *ngIf="prod.emAlta">EM ALTA</span>
+            </div>
+            <div>
+              <h4 class="prod-name">{{ prod.nome }}</h4>
+              <p class="prod-desc">{{ prod.descricao }}</p>
+              <span class="prod-price">{{ prod.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="product-right">
+            <button class="btn-add-cart" *ngIf="prod.quantidade === 0" [disabled]="!prod.disponivel" (click)="solicitarAdicao(prod)">Adicionar</button>
+            <div class="counter-box" *ngIf="prod.quantidade > 0">
+              <button class="count-btn" (click)="alterarQuantidade(prod, -1)">-</button>
+              <span class="count-val">{{ prod.quantidade }}</span>
+              <button class="count-btn highlight" (click)="alterarQuantidade(prod, 1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-basket-bar" *ngIf="totalItensCarrinho > 0">
+      <div class="basket-left">
+        <div class="basket-icon-ring">🛒</div>
+        <div class="basket-pricing">
+          <span class="basket-total">{{ valorTotalCarrinho | currency:'BRL':'symbol':'1.2-2' }}</span>
+          <span class="basket-count">{{ totalItensCarrinho }} {{ totalItensCarrinho === 1 ? 'item' : 'itens' }}</span>
+        </div>
+      </div>
+      <button class="btn-checkout-action" (click)="irParaCarrinho()">Ver Sacola →</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'carrinho'">
+    <div class="carrinho-screen-wrapper">
+      <div class="carrinho-header-nav" *ngIf="totalItensCarrinho > 0">
+        <button class="btn-back-from-cart" (click)="voltarDoCarrinho()">← Voltar aos restaurantes</button>
+      </div>
+
+      <div class="carrinho-vazio-state" *ngIf="totalItensCarrinho === 0">
+        <div class="carrinho-vazio-card">
+          <p class="msg-vazio">Seu carrinho está vazio no momento.</p>
+          <button class="btn-retornar-home" (click)="voltarParaLista()">Descobrir Restaurantes</button>
+        </div>
+      </div>
+
+      <div class="carrinho-main-layout" *ngIf="totalItensCarrinho > 0">
+        <div class="carrinho-columns">
+          <div class="carrinho-card-block">
+            <div class="carrinho-card-top">
+              <div>
+                <h3 class="cart-vendor-name">{{ restauranteParaCarrinho?.nome }}</h3>
+                <p class="cart-vendor-cat">{{ restauranteParaCarrinho?.categoria }}</p>
+              </div>
+              <span class="cart-status-pill">Pedido em andamento</span>
+            </div>
+            
+            <div class="cart-items-list">
+              <ng-container *ngFor="let item of restauranteParaCarrinho?.cardapio">
+                <div class="cart-item-row" *ngIf="item.quantidade > 0">
+                  <div class="cart-item-left">
+                    <img [src]="item.imagem" [alt]="item.nome" class="cart-item-thumb">
+                    <div>
+                      <h4 class="cart-item-title">{{ item.nome }}</h4>
+                      <p class="cart-item-price">{{ item.preco | currency:'BRL':'symbol':'1.2-2' }}</p>
+                      <div class="cart-addon-list" *ngIf="item.acompanhamentosEscolhidos?.length">
+                        <span class="cart-addon-item" *ngFor="let ac of item.acompanhamentosEscolhidos">
+                          + {{ ac.nome }} ({{ ac.preco | currency:'BRL':'symbol':'1.2-2' }})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cart-item-right">
+                    <div class="cart-counter-control">
+                      <button class="cart-qty-btn" (click)="alterarQuantidade(item, -1)">−</button>
+                      <span class="cart-qty-val">{{ item.quantidade }}</span>
+                      <button class="cart-qty-btn" (click)="alterarQuantidade(item, 1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="carrinho-card-block">
+            <h4 class="block-inner-title">Endereço de Entrega</h4>
+            <input type="text" class="address-input-element" placeholder="Rua, número e bairro" [(ngModel)]="enderecoEntrega">
+          </div>
+
+          <div class="carrinho-card-block">
+            <h4 class="block-inner-title">Forma de Pagamento</h4>
+            <div class="payment-options-stack">
+              <label class="payment-radio-row">
+                <input type="radio" name="paymentMethod" value="cartao" [(ngModel)]="formaPagamentoEscolhida">
+                <span class="radio-custom-label">Cartão de Crédito / Débito</span>
+              </label>
+              <label class="payment-radio-row">
+                <input type="radio" name="paymentMethod" value="pix" [(ngModel)]="formaPagamentoEscolhida">
+                <span class="radio-custom-label">Pix</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <aside class="summary-sticky-card">
+          <h3 class="summary-card-title">Resumo do Pedido</h3>
+          <div class="summary-data-table">
+            <div class="summary-data-row"><span>Subtotal</span><span>{{ valorTotalCarrinho | currency:'BRL':'symbol':'1.2-2' }}</span></div>
+            <div class="summary-data-row"><span>Taxa de entrega</span><span>{{ restauranteParaCarrinho?.taxa === 0 ? 'Grátis' : (restauranteParaCarrinho?.taxa | currency:'BRL':'symbol':'1.2-2') }}</span></div>
+            <hr class="summary-divider">
+            <div class="summary-data-row total-highlight-row">
+              <span class="summary-label-total">Total</span>
+              <span class="summary-value-total">{{ (valorTotalCarrinho + (restauranteParaCarrinho?.taxa || 0)) | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+          <button class="btn-submit-order" (click)="finalizarPedido()">Finalizar Pedido</button>
+        </aside>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'status'">
+    <div class="tracking-screen-wrapper">
+      <button class="btn-back-from-cart" (click)="voltarParaHomeLimpo()" style="margin-bottom: 20px;">← Voltar para Início</button>
+      <div class="tracking-header">
+        <h2 class="order-id-title">Pedido #{{ codigoPedido }}</h2>
+        <div class="confirmation-box">
+          <span class="confirmation-label">Código de Confirmação</span>
+          <span class="confirmation-code">{{ codigoConfirmacao }}</span>
+        </div>
+      </div>
+
+      <div class="tracking-card-block">
+        <h3 class="block-section-title">Status do Pedido</h3>
+        <div class="progress-meter"><div class="progress-fill" [style.width.%]="progressoPedido"></div></div>
+        <div class="status-steps-container">
+          <div class="status-step-row" *ngFor="let etapa of statusSteps; let index = index" [class.completed]="statusPedidoAtual > index + 1" [class.active]="statusPedidoAtual === index + 1">
+            <div class="step-icon-wrapper">
+              <span *ngIf="statusPedidoAtual > index + 1">✓</span>
+              <span *ngIf="statusPedidoAtual <= index + 1">{{ etapa.icone }}</span>
+            </div>
+            <div>
+              <div class="step-text-label">{{ etapa.label }}</div>
+              <div class="status-step-meta">{{ etapa.descricao }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tracking-card-block" *ngIf="motoboyNoLocal">
+        <h3 class="block-section-title">Informações do Motoboy</h3>
+        <div class="driver-info-row">
+          <div class="driver-profile-left">
+            <img [src]="motoboyInfo.avatar" alt="Foto do motoboy" class="driver-avatar-img">
+            <div class="driver-meta-text">
+              <p class="driver-name-label">{{ motoboyInfo.nome }}</p>
+              <p class="driver-phone-label">{{ motoboyInfo.telefone }}</p>
+              <p class="driver-phone-label">{{ motoboyInfo.veiculo }}</p>
+            </div>
+          </div>
+          <button class="btn-call-driver" type="button">Ligar</button>
+        </div>
+      </div>
+
+      <div class="tracking-card-block" *ngIf="motoboyNoLocal">
+        <h3 class="block-section-title">Rastreamento em Tempo Real</h3>
+        <div class="map-placeholder-box">
+          <div class="map-pin-indicator">📍</div>
+          <div class="map-main-text">Localização do motoboy atualizada em tempo real</div>
+          <div class="map-sub-text">Rota em andamento para o endereço de entrega</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'perfil'">
+    <div class="tracking-screen-wrapper" style="padding-top: 10px; display: flex; flex-direction: column; gap: 24px;">
+      
+      <div class="tracking-card-block" style="padding: 24px; position: relative; border-radius: 16px; background-color: #ffffff;">
+        <h3 class="block-section-title" style="display: flex; align-items: center; gap: 8px; font-size: 18px; margin-bottom: 24px; color: #1e293b;">
+          <span style="color: #ff3b30;">👤</span> Informações Pessoais
+        </h3>
+        
+        <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+          <div style="position: relative; width: 110px; height: 110px;">
+            <img [src]="clienteInfo.avatar" alt="Foto do Usuário" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+            <div style="position: absolute; bottom: 0; right: 0; background-color: #ff3b30; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; cursor: pointer;">
+              <span style="color: white; font-size: 14px;">📷</span>
+            </div>
+          </div>
+
+          <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">Nome completo</label>
+              <input type="text" [(ngModel)]="clienteInfo.nome" [readonly]="!modoEdicaoPerfil" [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'" [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'" style="width: 100%; padding: 10px 14px; border: 1px solid; border-radius: 8px; color: #334155; font-size: 14px; transition: all 0.2s;">
+            </div>
+
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">✉ Email</label>
+              <input type="email" [(ngModel)]="clienteInfo.email" [readonly]="!modoEdicaoPerfil" [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'" [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'" style="width: 100%; padding: 10px 14px; border: 1px solid; border-radius: 8px; color: #334155; font-size: 14px; transition: all 0.2s;">
+            </div>
+
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">📞 Telefone</label>
+              <input type="text" [(ngModel)]="clienteInfo.telefone" [readonly]="!modoEdicaoPerfil" [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'" [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'" style="width: 100%; padding: 10px 14px; border: 1px solid; border-radius: 8px; color: #334155; font-size: 14px; transition: all 0.2s;">
+            </div>
+
+            <div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: #64748b; margin-bottom: 6px;">📍 Endereço Principal</label>
+              <input type="text" [(ngModel)]="clienteInfo.endereco" [readonly]="!modoEdicaoPerfil" [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'" [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'" style="width: 100%; padding: 10px 14px; border: 1px solid; border-radius: 8px; color: #334155; font-size: 14px; transition: all 0.2s;">
+            </div>
+
+            <button type="button" (click)="alternarEdicaoPerfil()" [style.background-color]="modoEdicaoPerfil ? '#34c759' : '#ff3b30'" style="width: 100%; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; transition: background 0.2s;">
+              {{ modoEdicaoPerfil ? 'Salvar Informações' : 'Editar Informações' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tracking-card-block" style="padding: 24px; border-radius: 16px; background-color: #ffffff;">
+        <h3 class="block-section-title" style="display: flex; align-items: center; gap: 8px; font-size: 18px; margin-bottom: 20px; color: #1e293b;">
+          <span style="color: #ff3b30;">📦</span> Histórico de Pedidos
+        </h3>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div *ngFor="let ped of clienteInfo.historicoPedidos" style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: #1e293b;">{{ ped.restaurante }}</h4>
+                <span style="background-color: #def7ec; color: #03543f; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px;">{{ ped.status }}</span>
+              </div>
+              <p style="margin: 0; font-size: 12px; color: #64748b;">
+                {{ ped.codigo }} <span style="margin: 0 4px;">•</span> {{ ped.data }} <span style="margin: 0 4px;">•</span> {{ ped.itens }}
+              </p>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700; font-size: 15px; color: #1e293b; margin-bottom: 2px;">{{ ped.valor | currency:'BRL':'symbol':'1.2-2' }}</div>
+              <span style="color: #ff3b30; font-size: 13px; font-weight: 500; cursor: pointer;">Ver detalhes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="modal-overlay" *ngIf="exibirModalAcompanhamentos">
+    <div class="modal-box">
+      <h3 class="restaurant-name" style="font-size: 20px;">Adicionar adicionais?</h3>
+      <div style="max-height: 280px; overflow-y: auto; margin-bottom: 15px;">
+        <label class="checkbox-row" *ngFor="let ac of acompanhamentosTemporarios">
+          <div class="chk-left">
+            <input type="checkbox" [(ngModel)]="ac.selecionado">
+            <span class="radio-custom-label" style="font-weight: 600;">{{ ac.nome }}</span>
+          </div>
+          <span class="chk-price">+ {{ ac.preco | currency:'BRL':'symbol':'1.2-2' }}</span>
+        </label>
+      </div>
+      <div class="modal-footer-btns">
+        <button class="btn-cancel" (click)="fecharModal()">Cancelar</button>
+        <button class="btn-confirm" (click)="confirmarAcompanhamentos()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+</div>

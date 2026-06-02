@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:host {
+  font-family: 'Inter', sans-serif;
+}
+
+.registration-container {
+  min-height: 100vh;
+  background-color: #FFF5F5; /* Cor de fundo suave */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Cabeçalho da Página */
+.registration-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 30px;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1e293b;
+  padding: 8px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-back svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-texts h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.header-texts p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 4px 0 0 0;
+}
+
+/* Stepper Estrutural */
+.stepper-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 35px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-circle {
+  background-color: #ff2a3a; /* Vermelho institucional */
+  color: #ffffff;
+}
+
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e2e8f0;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+}
+
+.step-line.filled {
+  background-color: #ff2a3a;
+}
+
+/* Cartão do Formulário */
+.form-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.step-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.step-title h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.icon-red {
+  width: 22px;
+  height: 22px;
+  color: #ff2a3a;
+  margin-right: 10px;
+}
+
+/* Formulários e Inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-grid {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-group-70 {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 70%;
+}
+
+.form-group-30 {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  width: 30%;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: #0f172a;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff2a3a;
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+/* Inputs que possuem Ícone Interno */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
+}
+
+.input-with-icon input {
+  padding-left: 48px;
+}
+
+/* Botões de Ação */
+.btn-primary {
+  width: 100%;
+  height: 48px;
+  background-color: #ff2a3a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0px;
+}
+
+.btn-primary:hover {
+  background-color: #e01f2e;
+}
+
+.actions-wrapper {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.btn-secondary {
+  width: 100%;
+  height: 48px;
+  background-color: #e2e8f0;
+  color: #475569;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
