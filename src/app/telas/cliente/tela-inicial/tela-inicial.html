@@ -1,0 +1,881 @@
+<div class="dashboard-container" id="carrinho-anchor">
+  <div class="top-bar" *ngIf="etapaFluxo !== 'perfil'">
+    <div>
+      <h1 class="main-title">DeliveryApp</h1>
+      <p class="subtitle">Os melhores pratos na sua porta</p>
+    </div>
+    <div class="header-actions">
+      <button class="header-action-btn" type="button" (click)="irParaCarrinho()">
+        <span class="action-icon">🛒</span> <span class="header-action-label">Carrinho</span>
+      </button>
+      <button class="header-action-btn" type="button" (click)="abrirPerfil()">
+        <span class="action-icon">👤</span> <span class="header-action-label">Perfil</span>
+      </button>
+      <button
+        class="header-action-btn header-action-btn--logout"
+        type="button"
+        (click)="sairDaConta()"
+      >
+        <span class="action-icon">⎋</span> <span class="header-action-label">Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="top-bar profile-header" *ngIf="etapaFluxo === 'perfil'">
+    <div class="profile-header-content">
+      <button class="profile-header-back-btn" (click)="voltarDoCarrinho()" aria-label="Voltar">
+        ←
+      </button>
+      <div>
+        <h1 class="main-title profile-title">Meu Perfil</h1>
+        <p class="subtitle profile-subtitle">Gerencie suas informações</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button
+        class="header-action-btn header-action-btn--logout profile-logout-btn"
+        type="button"
+        (click)="sairDaConta()"
+      >
+        <span>↳</span> <span class="profile-logout-text">Sair</span>
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="etapaFluxo === 'home'">
+    <div *ngIf="!restauranteSelecionado">
+      <div class="search-box search-box--spaced">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="🔍 Buscar restaurantes ou produtos..."
+          [(ngModel)]="termoPesquisa"
+          (input)="pesquisarProdutos(termoPesquisa)"
+        />
+      </div>
+
+      <!-- Resultados de Busca Global de Produtos -->
+      <ng-container *ngIf="mostrarvResultadosPesquisa && resultadosPesquisa.length > 0">
+        <div class="search-results-container">
+          <div class="search-results-header">
+            <h3>🍽️ Produtos encontrados ({{ resultadosPesquisa.length }})</h3>
+          </div>
+          <div class="search-results-grid">
+            <div
+              *ngFor="let produto of resultadosPesquisa"
+              (click)="selecionarResultado(produto.restaurante)"
+              class="product-search-card"
+            >
+              <img
+                [src]="produto.imagem"
+                [alt]="produto.nome"
+                (error)="tratarErroImagem($event)"
+                class="product-search-image"
+              />
+              <h4 class="product-search-name">{{ produto.nome }}</h4>
+              <p class="product-search-desc">{{ produto.descricao }}</p>
+              <div class="product-search-footer">
+                <span class="product-search-price">R$ {{ produto.preco.toFixed(2) }}</span>
+                <span class="product-search-restaurant">{{ produto.nomeRestaurante }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Sem Resultados -->
+      <div *ngIf="termoPesquisa.trim() && !mostrarvResultadosPesquisa" class="no-results">
+        <div style="text-align: center; padding: 40px 20px">
+          <p style="font-size: 48px; margin: 0">🔍</p>
+          <p style="margin: 15px 0 0 0; font-size: 16px; color: #666; font-weight: 600">
+            Nenhum produto encontrado
+          </p>
+          <p style="margin: 8px 0 0 0; font-size: 13px; color: #999">
+            Tente buscar por outro produto ou restaurante
+          </p>
+        </div>
+      </div>
+
+      <!-- Mostrar Categorias e Restaurantes apenas se não houver busca -->
+      <ng-container *ngIf="!termoPesquisa.trim()">
+        <div class="chips-scroll">
+          <div
+            *ngFor="let cat of categorias"
+            class="category-chip"
+            [class.active]="categoriaSelecionada === cat"
+            (click)="selecionarCategoria(cat)"
+          >
+            {{
+              cat === 'Todos'
+                ? 'Todos'
+                : cat === 'brasileira'
+                  ? 'Brasileira'
+                  : cat === 'pizzaria'
+                    ? 'Pizzaria'
+                    : cat === 'hamburgueria'
+                      ? 'Hambúrgueres'
+                      : cat === 'japonesa'
+                        ? 'Japonesa'
+                        : cat === 'italiana'
+                          ? 'Italiana'
+                          : cat === 'tailandesa'
+                            ? 'Tailandesa'
+                            : cat === 'coreana'
+                              ? 'Coreana'
+                              : cat === 'mexicana'
+                                ? 'Mexicana'
+                                : cat === 'indiana'
+                                  ? 'Indiana'
+                                  : 'Vegetariana'
+            }}
+          </div>
+        </div>
+
+        <div class="restaurants-grid">
+          <div
+            class="restaurant-card"
+            *ngFor="let resto of restaurantesFiltrados"
+            (click)="selecionarRestaurante(resto)"
+          >
+            <div class="image-box">
+              <img [src]="resto.imagem" [alt]="resto.nome" (error)="tratarErroImagem($event)" />
+              <span class="rating-badge">★ {{ resto.nota }}</span>
+            </div>
+            <div class="card-details">
+              <h3 class="restaurant-name">{{ resto.nome }}</h3>
+              <p class="restaurant-category">{{ resto.categoria }}</p>
+              <div class="meta-row">
+                <span>{{ resto.tempo }}</span>
+                <span [class.free-delivery]="resto.taxa === 0">
+                  {{
+                    resto.taxa === 0
+                      ? 'Entrega Grátis'
+                      : (resto.taxa | currency: 'BRL' : 'symbol' : '1.2-2')
+                  }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div *ngIf="restauranteSelecionado">
+      <button class="btn-back-list" (click)="voltarParaLista()">← Voltar para restaurantes</button>
+
+      <div class="menu-header-banner">
+        <img
+          [src]="restauranteSelecionado.imagem"
+          [alt]="restauranteSelecionado.nome"
+          (error)="tratarErroImagem($event)"
+          class="banner-img"
+        />
+        <div>
+          <h2 class="menu-title">{{ restauranteSelecionado.nome }}</h2>
+          <p class="restaurant-category" style="margin: 0">
+            {{ restauranteSelecionado.categoria }}
+          </p>
+          <div class="menu-meta-badges">
+            <span>★ {{ restauranteSelecionado.nota }}</span> <span>•</span>
+            <span>{{ restauranteSelecionado.tempo }}</span> <span>•</span>
+            <span [class.free-delivery]="restauranteSelecionado.taxa === 0">
+              {{
+                restauranteSelecionado.taxa === 0
+                  ? 'Entrega Grátis'
+                  : 'Taxa: ' + (restauranteSelecionado.taxa | currency: 'BRL' : 'symbol' : '1.2-2')
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Busca e Filtros -->
+      <div class="menu-search-panel">
+        <input
+          type="text"
+          [(ngModel)]="termoPesquisa"
+          placeholder="🔍 Buscar pratos..."
+          class="menu-search-input"
+        />
+
+        <div class="menu-filter-row">
+          <button
+            *ngFor="let cat of categoriasDisponiveis"
+            (click)="categoriaSelecionada = cat"
+            [class.active]="categoriaSelecionada === cat"
+            class="menu-filter-chip"
+            [style.background]="categoriaSelecionada === cat ? 'var(--primary, #FF6600)' : 'white'"
+            [style.color]="categoriaSelecionada === cat ? 'white' : 'black'"
+          >
+            {{ cat }}
+          </button>
+        </div>
+      </div>
+
+      <div class="products-stack">
+        <div
+          class="product-horizontal-card"
+          *ngFor="let prod of produtosFiltrados"
+          [class.disabled-card]="!prod.disponivel"
+        >
+          <div class="product-left">
+            <div class="thumb-container" style="position: relative">
+              <img [src]="prod.imagem" [alt]="prod.nome" (error)="tratarErroImagem($event)" />
+              <span class="alta-badge" *ngIf="prod.emAlta">EM ALTA</span>
+              <span
+                *ngIf="!prod.disponivel"
+                style="
+                  position: absolute;
+                  top: 10px;
+                  right: 10px;
+                  background: rgba(0, 0, 0, 0.7);
+                  color: white;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  font-size: 11px;
+                  font-weight: bold;
+                "
+                >INDISPONÍVEL</span
+              >
+            </div>
+            <div>
+              <h4 class="prod-name">{{ prod.nome }}</h4>
+              <p style="font-size: 12px; color: #999; margin: 4px 0">{{ prod.categoria }}</p>
+              <p class="prod-desc">{{ prod.descricao }}</p>
+              <span class="prod-price">{{
+                prod.preco | currency: 'BRL' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+          </div>
+
+          <div class="product-right">
+            <button
+              class="btn-add-cart"
+              *ngIf="prod.quantidade === 0"
+              [disabled]="!prod.disponivel"
+              (click)="solicitarAdicao(prod)"
+            >
+              {{ !prod.disponivel ? 'Indisponível' : 'Adicionar' }}
+            </button>
+            <div class="counter-box" *ngIf="prod.quantidade > 0">
+              <button class="count-btn" (click)="alterarQuantidade(prod, -1)">-</button>
+              <span class="count-val">{{ prod.quantidade }}</span>
+              <button class="count-btn highlight" (click)="alterarQuantidade(prod, 1)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="produtosFiltrados.length === 0"
+          style="padding: 40px 20px; text-align: center; color: #999"
+        >
+          <p>Nenhum produto encontrado nesta categoria.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="floating-basket-bar" *ngIf="totalItensCarrinho > 0">
+      <div class="basket-left">
+        <div class="basket-icon-ring">🛒</div>
+        <div class="basket-pricing">
+          <span class="basket-total">{{
+            valorTotalCarrinho | currency: 'BRL' : 'symbol' : '1.2-2'
+          }}</span>
+          <span class="basket-count"
+            >{{ totalItensCarrinho }} {{ totalItensCarrinho === 1 ? 'item' : 'itens' }}</span
+          >
+        </div>
+      </div>
+      <button class="btn-checkout-action" (click)="irParaCarrinho()">Ver Sacola →</button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'carrinho'">
+    <div class="carrinho-screen-wrapper">
+      <div class="carrinho-header-nav" *ngIf="totalItensCarrinho > 0">
+        <button class="btn-back-from-cart" (click)="voltarDoCarrinho()">
+          ← Voltar aos restaurantes
+        </button>
+      </div>
+
+      <div class="carrinho-vazio-state" *ngIf="totalItensCarrinho === 0">
+        <div class="carrinho-vazio-card">
+          <p class="msg-vazio">Seu carrinho está vazio no momento.</p>
+          <button class="btn-retornar-home" (click)="voltarParaLista()">
+            Descobrir Restaurantes
+          </button>
+        </div>
+      </div>
+
+      <div class="carrinho-main-layout" *ngIf="totalItensCarrinho > 0">
+        <div class="carrinho-columns">
+          <div class="carrinho-card-block">
+            <div class="carrinho-card-top">
+              <div>
+                <h3 class="cart-vendor-name">{{ restauranteParaCarrinho?.nome }}</h3>
+                <p class="cart-vendor-cat">{{ restauranteParaCarrinho?.categoria }}</p>
+              </div>
+              <span class="cart-status-pill">Pedido em andamento</span>
+            </div>
+
+            <div class="cart-items-list">
+              <ng-container *ngFor="let item of restauranteParaCarrinho?.cardapio">
+                <div class="cart-item-row" *ngIf="item.quantidade > 0">
+                  <div class="cart-item-left">
+                    <img
+                      [src]="item.imagem"
+                      [alt]="item.nome"
+                      (error)="tratarErroImagem($event)"
+                      class="cart-item-thumb"
+                    />
+                    <div>
+                      <h4 class="cart-item-title">{{ item.nome }}</h4>
+                      <p class="cart-item-price">
+                        {{ item.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}
+                      </p>
+                      <div class="cart-addon-list" *ngIf="item.acompanhamentosEscolhidos?.length">
+                        <span
+                          class="cart-addon-item"
+                          *ngFor="let ac of item.acompanhamentosEscolhidos"
+                        >
+                          + {{ ac.nome }} ({{ ac.preco | currency: 'BRL' : 'symbol' : '1.2-2' }})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cart-item-right">
+                    <div class="cart-counter-control">
+                      <button class="cart-qty-btn" (click)="alterarQuantidade(item, -1)">−</button>
+                      <span class="cart-qty-val">{{ item.quantidade }}</span>
+                      <button class="cart-qty-btn" (click)="alterarQuantidade(item, 1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="carrinho-card-block">
+            <h4 class="block-inner-title">Endereço de Entrega</h4>
+            <input
+              type="text"
+              class="address-input-element"
+              placeholder="Rua, número e bairro"
+              [(ngModel)]="enderecoEntrega"
+            />
+          </div>
+
+          <div class="carrinho-card-block">
+            <h4 class="block-inner-title">Cupom de Desconto</h4>
+            <div class="coupon-field-group">
+              <input
+                type="text"
+                class="coupon-input-element"
+                placeholder="Digite o código do cupom"
+                [(ngModel)]="cupomAplicado"
+                [disabled]="descontoCupom > 0"
+                (keyup.enter)="aplicarCupom()"
+              />
+              <button class="coupon-apply-btn" *ngIf="descontoCupom === 0" (click)="aplicarCupom()">
+                Aplicar
+              </button>
+              <button
+                class="coupon-apply-btn coupon-apply-btn--remove"
+                *ngIf="descontoCupom > 0"
+                (click)="limparCupom()"
+              >
+                Remover
+              </button>
+            </div>
+            <p
+              class="coupon-message"
+              *ngIf="mensagemCupom"
+              [class.coupon-message--ok]="descontoCupom > 0"
+              [class.coupon-message--err]="descontoCupom === 0"
+            >
+              {{ mensagemCupom }}
+            </p>
+          </div>
+
+          <div class="carrinho-card-block">
+            <h4 class="block-inner-title">Forma de Pagamento</h4>
+            <div class="payment-options-stack">
+              <label class="payment-radio-row">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="cartao"
+                  [(ngModel)]="formaPagamentoEscolhida"
+                />
+                <span class="radio-custom-label">Cartão de Crédito / Débito</span>
+              </label>
+              <label class="payment-radio-row">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="pix"
+                  [(ngModel)]="formaPagamentoEscolhida"
+                />
+                <span class="radio-custom-label">Pix</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <aside class="summary-sticky-card">
+          <h3 class="summary-card-title">Resumo do Pedido</h3>
+          <div class="summary-data-table">
+            <div class="summary-data-row">
+              <span>Subtotal</span
+              ><span>{{ subtotalBrutoCarrinho | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+            </div>
+            <div class="summary-data-row coupon-discount-row" *ngIf="descontoCupom > 0">
+              <span>Cupom de desconto</span
+              ><span>− {{ descontoCupom | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+            </div>
+            <div class="summary-data-row">
+              <span>Taxa de entrega</span
+              ><span>{{
+                restauranteParaCarrinho?.taxa === 0
+                  ? 'Grátis'
+                  : (restauranteParaCarrinho?.taxa | currency: 'BRL' : 'symbol' : '1.2-2')
+              }}</span>
+            </div>
+            <hr class="summary-divider" />
+            <div class="summary-data-row total-highlight-row">
+              <span class="summary-label-total">Total</span>
+              <span class="summary-value-total">{{
+                valorTotalCarrinho + (restauranteParaCarrinho?.taxa || 0)
+                  | currency: 'BRL' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+          </div>
+          <button class="btn-submit-order" (click)="finalizarPedido()">Finalizar Pedido</button>
+        </aside>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'status'">
+    <div class="tracking-screen-wrapper">
+      <button
+        class="btn-back-from-cart"
+        (click)="voltarParaHomeLimpo()"
+        style="margin-bottom: 20px"
+      >
+        ← Voltar para Início
+      </button>
+
+      <!-- EM ANDAMENTO: rastreamento ao vivo (some quando o pedido é entregue) -->
+      <ng-container *ngIf="!pedidoConcluido">
+        <div class="tracking-header">
+          <h2 class="order-id-title">Pedido #{{ codigoPedido }}</h2>
+          <div class="confirmation-box">
+            <span class="confirmation-label">Código de Confirmação</span>
+            <span class="confirmation-code">{{ codigoConfirmacao }}</span>
+          </div>
+        </div>
+
+        <div class="tracking-card-block">
+          <h3 class="block-section-title">Status do Pedido</h3>
+          <div class="progress-meter">
+            <div class="progress-fill" [style.width.%]="progressoPedido"></div>
+          </div>
+          <div class="status-steps-container">
+            <div
+              class="status-step-row"
+              *ngFor="let etapa of statusSteps; let index = index"
+              [class.completed]="statusPedidoAtual > index + 1"
+              [class.active]="statusPedidoAtual === index + 1"
+            >
+              <div class="step-icon-wrapper">
+                <span *ngIf="statusPedidoAtual > index + 1">✓</span>
+                <span *ngIf="statusPedidoAtual <= index + 1">{{ etapa.icone }}</span>
+              </div>
+              <div>
+                <div class="step-text-label">{{ etapa.label }}</div>
+                <div class="status-step-meta">{{ etapa.descricao }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracking-card-block" *ngIf="motoboyNoLocal">
+          <h3 class="block-section-title">Informações do Motoboy</h3>
+          <div class="driver-info-row">
+            <div class="driver-profile-left">
+              <img
+                [src]="motoboyInfo.avatar"
+                alt="Foto do motoboy"
+                (error)="tratarErroImagem($event, 'avatar')"
+                class="driver-avatar-img"
+              />
+              <div class="driver-meta-text">
+                <p class="driver-name-label">{{ motoboyInfo.nome }}</p>
+                <p class="driver-phone-label">{{ motoboyInfo.telefone }}</p>
+                <p class="driver-phone-label">{{ motoboyInfo.veiculo }}</p>
+              </div>
+            </div>
+            <button class="btn-call-driver" type="button">Ligar</button>
+          </div>
+        </div>
+
+        <div class="tracking-card-block" *ngIf="motoboyNoLocal">
+          <h3 class="block-section-title">Rastreamento em Tempo Real</h3>
+          <div class="map-placeholder-box">
+            <div class="map-pin-indicator">📍</div>
+            <div class="map-main-text">Localização do motoboy atualizada em tempo real</div>
+            <div class="map-sub-text">Rota em andamento para o endereço de entrega</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- CONCLUÍDO: pedido entregue -> resumo no lugar do rastreamento -->
+      <ng-container *ngIf="pedidoConcluido">
+        <div class="tracking-header">
+          <h2 class="order-id-title">Detalhes do Pedido</h2>
+          <div class="confirmation-box">
+            <span class="confirmation-label">Pedido</span>
+            <span class="confirmation-code" style="font-size: 15px">#{{ codigoPedido }}</span>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #e8f8ef;
+            border: 1px solid #c3ecd4;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+          "
+        >
+          <span
+            style="
+              flex: none;
+              width: 30px;
+              height: 30px;
+              border-radius: 50%;
+              background: #34c759;
+              color: #fff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 16px;
+              font-weight: bold;
+            "
+            >✓</span
+          >
+          <span style="font-weight: 600; color: #166534"
+            >Pedido concluído<span *ngIf="pedidoDetalhe?.dataConclusao">
+              • {{ pedidoDetalhe.dataConclusao }}</span
+            ></span
+          >
+        </div>
+
+        <div class="tracking-card-block">
+          <h3 class="block-section-title" style="margin-bottom: 16px">
+            {{ pedidoDetalhe?.restauranteNome }}
+          </h3>
+          <div
+            *ngFor="let item of pedidoDetalhe?.itens"
+            style="
+              display: flex;
+              gap: 14px;
+              align-items: flex-start;
+              padding: 12px 0;
+              border-bottom: 1px solid #f1f5f9;
+            "
+          >
+            <div style="position: relative; flex: none">
+              <img
+                [src]="item.imagem"
+                [alt]="item.nome"
+                (error)="tratarErroImagem($event)"
+                style="
+                  width: 60px;
+                  height: 60px;
+                  border-radius: 10px;
+                  object-fit: cover;
+                  background: #f1f5f9;
+                "
+              />
+              <span
+                style="
+                  position: absolute;
+                  top: -6px;
+                  left: -6px;
+                  background: #ff3b30;
+                  color: #fff;
+                  min-width: 20px;
+                  height: 20px;
+                  padding: 0 5px;
+                  border-radius: 10px;
+                  font-size: 12px;
+                  font-weight: 700;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+                >{{ item.quantidade }}</span
+              >
+            </div>
+            <div style="flex: 1; min-width: 0">
+              <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b">
+                {{ item.nome }}
+              </h4>
+              <p
+                *ngFor="let ac of item.acompanhamentos"
+                style="margin: 4px 0 0 0; font-size: 12px; color: #64748b"
+              >
+                + {{ ac.nome }}
+              </p>
+            </div>
+            <div style="font-weight: 700; font-size: 14px; color: #1e293b; white-space: nowrap">
+              {{ item.preco * item.quantidade | currency: 'BRL' : 'symbol' : '1.2-2' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="tracking-card-block">
+          <h3 class="block-section-title" style="margin-bottom: 14px">Resumo de valores</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 6px 0;
+              color: #475569;
+              font-size: 14px;
+            "
+          >
+            <span>Subtotal</span
+            ><span>{{ pedidoDetalhe?.subtotal | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+          </div>
+          <div
+            *ngIf="pedidoDetalhe?.desconto > 0"
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 6px 0;
+              color: #16a34a;
+              font-size: 14px;
+            "
+          >
+            <span>Cupom</span
+            ><span>- {{ pedidoDetalhe?.desconto | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              padding: 6px 0;
+              color: #475569;
+              font-size: 14px;
+            "
+          >
+            <span>Taxa de entrega</span
+            ><span [style.color]="pedidoDetalhe?.taxaEntrega === 0 ? '#16a34a' : '#475569'">{{
+              pedidoDetalhe?.taxaEntrega === 0
+                ? 'Grátis'
+                : (pedidoDetalhe?.taxaEntrega | currency: 'BRL' : 'symbol' : '1.2-2')
+            }}</span>
+          </div>
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 10px 0" />
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 4px 0;
+            "
+          >
+            <span style="font-weight: 700; font-size: 16px; color: #1e293b">Total</span
+            ><span style="font-weight: 700; font-size: 18px; color: #1e293b">{{
+              pedidoDetalhe?.total | currency: 'BRL' : 'symbol' : '1.2-2'
+            }}</span>
+          </div>
+        </div>
+
+        <div class="tracking-card-block">
+          <h3 class="block-section-title" style="margin-bottom: 10px">Pagamento</h3>
+          <p style="margin: 0; color: #475569; font-size: 14px">
+            💳 {{ pedidoDetalhe?.formaPagamento }}
+          </p>
+        </div>
+
+        <div class="tracking-card-block">
+          <h3 class="block-section-title" style="margin-bottom: 10px">Endereço de entrega</h3>
+          <p style="margin: 0; color: #475569; font-size: 14px">📍 {{ pedidoDetalhe?.endereco }}</p>
+        </div>
+
+        <button
+          (click)="voltarParaHomeLimpo()"
+          style="
+            width: 100%;
+            background: #ff3b30;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 6px;
+          "
+        >
+          Voltar para o início
+        </button>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="etapaFluxo === 'perfil'">
+    <div
+      class="tracking-screen-wrapper"
+      style="padding-top: 10px; display: flex; flex-direction: column; gap: 24px"
+    >
+      <div class="tracking-card-block profile-section-card">
+        <h3 class="block-section-title profile-section-heading">
+          <span class="profile-section-icon">👤</span> Informações Pessoais
+        </h3>
+
+        <div class="profile-content-row">
+          <div class="profile-avatar-wrapper">
+            <img
+              [src]="clienteInfo.avatar"
+              alt="Foto do Usuário"
+              (error)="tratarErroImagem($event, 'avatar')"
+              class="profile-avatar-image"
+            />
+            <div (click)="abrirSeletorFoto()" title="Adicionar foto" class="profile-avatar-edit">
+              <span class="profile-avatar-edit-icon">📷</span>
+            </div>
+            <input
+              #fotoInput
+              type="file"
+              accept="image/*"
+              (change)="aoEscolherFoto($event)"
+              style="display: none"
+            />
+          </div>
+
+          <div class="profile-form-stack">
+            <div class="profile-field">
+              <label class="profile-field-label">Nome completo</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteInfo.nome"
+                [readonly]="!modoEdicaoPerfil"
+                [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'"
+                [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'"
+                class="profile-input"
+              />
+            </div>
+
+            <div class="profile-field">
+              <label class="profile-field-label">✉ Email</label>
+              <input
+                type="email"
+                [(ngModel)]="clienteInfo.email"
+                [readonly]="!modoEdicaoPerfil"
+                [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'"
+                [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'"
+                class="profile-input"
+              />
+            </div>
+
+            <div class="profile-field">
+              <label class="profile-field-label">📞 Telefone</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteInfo.telefone"
+                [readonly]="!modoEdicaoPerfil"
+                [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'"
+                [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'"
+                class="profile-input"
+              />
+            </div>
+
+            <div class="profile-field">
+              <label class="profile-field-label">📍 Endereço Principal</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteInfo.endereco"
+                [readonly]="!modoEdicaoPerfil"
+                [style.background-color]="modoEdicaoPerfil ? '#ffffff' : '#f8fafc'"
+                [style.border-color]="modoEdicaoPerfil ? '#ff3b30' : '#e2e8f0'"
+                class="profile-input"
+              />
+            </div>
+
+            <button
+              type="button"
+              (click)="alternarEdicaoPerfil()"
+              [style.background-color]="modoEdicaoPerfil ? '#34c759' : '#ff3b30'"
+              class="profile-submit-btn"
+            >
+              {{ modoEdicaoPerfil ? 'Salvar Informações' : 'Editar Informações' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tracking-card-block profile-section-card">
+        <h3 class="block-section-title profile-section-heading">
+          <span class="profile-section-icon">📦</span> Histórico de Pedidos
+        </h3>
+
+        <div class="profile-history-list">
+          <div
+            *ngFor="let ped of clienteInfo.historicoPedidos"
+            (click)="acompanharPedido(ped)"
+            class="profile-history-item"
+          >
+            <div>
+              <div class="profile-history-item-head">
+                <h4 class="profile-history-title">{{ ped.restaurante }}</h4>
+                <span class="profile-history-badge">{{ ped.status }}</span>
+              </div>
+              <p class="profile-history-meta">
+                {{ ped.codigo }} <span style="margin: 0 4px">•</span> {{ ped.data }}
+                <span style="margin: 0 4px">•</span> {{ ped.itens }}
+              </p>
+            </div>
+            <div class="profile-history-right">
+              <div class="profile-history-price">
+                {{ ped.valor | currency: 'BRL' : 'symbol' : '1.2-2' }}
+              </div>
+              <span class="profile-history-link">Acompanhar pedido →</span>
+            </div>
+          </div>
+
+          <div *ngIf="!clienteInfo.historicoPedidos.length" class="profile-empty-state">
+            <p class="profile-empty-icon">🧾</p>
+            <p class="profile-empty-text">Você ainda não fez nenhum pedido.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="modal-overlay" *ngIf="exibirModalAcompanhamentos">
+    <div class="modal-box">
+      <h3 class="restaurant-name" style="font-size: 20px">Adicionar adicionais?</h3>
+      <div style="max-height: 280px; overflow-y: auto; margin-bottom: 15px">
+        <label class="checkbox-row" *ngFor="let ac of acompanhamentosTemporarios">
+          <div class="chk-left">
+            <input type="checkbox" [(ngModel)]="ac.selecionado" />
+            <span class="radio-custom-label" style="font-weight: 600">{{ ac.nome }}</span>
+          </div>
+          <span class="chk-price">+ {{ ac.preco | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+        </label>
+      </div>
+      <div class="modal-footer-btns">
+        <button class="btn-cancel" (click)="fecharModal()">Cancelar</button>
+        <button class="btn-confirm" (click)="confirmarAcompanhamentos()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>

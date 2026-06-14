@@ -1,0 +1,67 @@
+<section class="motoboy-page">
+  <div class="hero-card">
+    <div>
+      <p class="eyebrow">Área do motoboy</p>
+      <h1>Bem-vindo, {{ nome }}</h1>
+      <p class="hero-description">
+        Aqui você vai acompanhar entregas, status da rota e suas tarefas do dia.
+      </p>
+    </div>
+
+    <div class="hero-status">
+      <span class="status-pill">{{ status }}</span>
+      <p class="rating">⭐ {{ avaliacao }} de avaliação</p>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <article class="summary-card">
+      <span class="summary-label">Entregas pendentes</span>
+      <strong>{{ entregasPendentes }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">Entregas hoje</span>
+      <strong>{{ entregasHoje }}</strong>
+    </article>
+
+    <article class="summary-card">
+      <span class="summary-label">Próximas ações</span>
+      <strong>{{ proximasAcoes.length }}</strong>
+    </article>
+  </div>
+
+  <div class="content-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Entregas em andamento</h2>
+        <span>Atualize conforme sair</span>
+      </div>
+
+      <div class="delivery-list">
+        <article class="delivery-item" *ngFor="let entrega of entregasEmAndamento">
+          <div>
+            <p class="delivery-code">{{ entrega.codigo }}</p>
+            <p class="delivery-client">{{ entrega.cliente }}</p>
+            <p class="delivery-address">{{ entrega.endereco }}</p>
+          </div>
+
+          <span class="delivery-status">{{ entrega.status }}</span>
+        </article>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="panel-header">
+        <h2>Próximas ações</h2>
+        <span>Checklist rápido</span>
+      </div>
+
+      <ul class="action-list">
+        <li *ngFor="let acao of proximasAcoes">{{ acao }}</li>
+      </ul>
+
+      <button class="primary-btn">Abrir painel de entregas</button>
+    </aside>
+  </div>
+</section>

@@ -1,0 +1,81 @@
+<div *ngIf="telaAtual === 'login'">
+
+  <div class="main-screen" [ngClass]="perfilAtivo">
+
+    <div class="external-header" *ngIf="perfilAtivo === 'cliente'">
+      <h1>Bem-vindo ao Flash Food!</h1>
+      <p>Faça login para fazer seus pedidos</p>
+    </div>
+
+    <div class="login-card">
+      <div class="top-icon-container">
+        <div class="icon-box">
+          <svg *ngIf="perfilAtivo === 'cliente'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          
+          <svg *ngIf="perfilAtivo === 'motoboy'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M15 6a3.5 3.5 0 1 0-7 0"></path><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></svg>
+          
+          <svg *ngIf="perfilAtivo === 'dono'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          
+          <svg *ngIf="perfilAtivo === 'restaurante'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <div class="input-field">
+          <span class="icon">✉️</span>
+          <input #emailInput type="email" [(ngModel)]="loginEmail" name="loginEmail" [placeholder]="perfilAtivo + '@test.com'" (keyup.enter)="fazerLogin()">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Senha</label>
+        <div class="input-field">
+          <span class="icon">🔒</span>
+          <input #senhaInput [type]="senhaVisivel ? 'text' : 'password'" [(ngModel)]="loginSenha" name="loginSenha" placeholder="••••••••" (keyup.enter)="fazerLogin()">
+          <button type="button" class="eye-btn" (click)="toggleSenhaVisivel()">
+            {{ senhaVisivel ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="loginErro" style="color: #e74c3c; margin: 10px 0; font-size: 14px; text-align: center;">
+        {{ loginErro }}
+      </div>
+
+      <button class="btn-login" (click)="fazerLogin()" [disabled]="loginCarregando">{{ loginCarregando ? 'Entrando...' : 'Entrar' }}</button>
+
+      <p class="signup-text">
+        <span *ngIf="perfilAtivo === 'cliente'">Ainda não tem conta? </span>
+        <span *ngIf="perfilAtivo === 'motoboy'">Não é entregador ainda? </span>
+        <span *ngIf="perfilAtivo === 'dono'">Não tem acesso? </span>
+        <span *ngIf="perfilAtivo === 'restaurante'">Ainda não cadastrou seu restaurante? </span>
+        <a style="cursor: pointer;" (click)="irParaCadastro()">Cadastre-se</a>
+      </p>
+
+      <div class="access-menu">
+        <p>Acessar como:</p>
+        <div class="role-buttons">
+          <button [class.active]="perfilAtivo === 'cliente'" (click)="mudarPerfil('cliente')">Cliente</button>
+          <button [class.active]="perfilAtivo === 'motoboy'" (click)="mudarPerfil('motoboy')">Motoboy</button>
+          <button [class.active]="perfilAtivo === 'dono'" (click)="mudarPerfil('dono')">Dono</button>
+          <button [class.active]="perfilAtivo === 'restaurante'" (click)="mudarPerfil('restaurante')">Restaurante</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<app-tela-inicial *ngIf="telaAtual === 'cliente-home'" (logout)="irParaLogin()"></app-tela-inicial>
+<app-tela-motoboy *ngIf="telaAtual === 'motoboy-home'" (logout)="irParaLogin()"></app-tela-motoboy>
+<app-tela-dono *ngIf="telaAtual === 'dono-home'" (logout)="irParaLogin()"></app-tela-dono>
+<app-tela-restaurante *ngIf="telaAtual === 'restaurante-home'" (logout)="irParaLogin()"></app-tela-restaurante>
+
+<ng-container *ngIf="telaAtual !== 'login' && telaAtual !== 'cliente-home' && telaAtual !== 'motoboy-home' && telaAtual !== 'dono-home' && telaAtual !== 'restaurante-home'">
+  <app-cadastro *ngIf="telaAtual === 'cadastro-cliente'" (voltar)="irParaLogin()" (finalizar)="finalizarCadastroComSucesso('cliente')"></app-cadastro>
+  <app-cadastro-motoboy *ngIf="telaAtual === 'cadastro-motoboy'" (voltar)="irParaLogin()" (finalizar)="finalizarCadastroComSucesso('motoboy')"></app-cadastro-motoboy>
+  <app-cadastro-dono *ngIf="telaAtual === 'cadastro-dono'" (voltar)="irParaLogin()" (finalizar)="finalizarCadastroComSucesso('dono')"></app-cadastro-dono>
+  <app-cadastro-restaurante *ngIf="telaAtual === 'cadastro-restaurante'" (voltar)="irParaLogin()" (finalizar)="finalizarCadastroComSucesso('restaurante')"></app-cadastro-restaurante>
+</ng-container>

@@ -1,0 +1,239 @@
+[33m❯[39m Building...
+[32m✔[39m Building...
+Application bundle generation failed. [3.510 seconds] - 2026-06-10T19:10:23.371Z
+
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'style' does not exist on type 'EventTarget'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.html:49:52:
+[37m      49 │ ...enter)="$event.currentTarget.[32mstyle[37m.boxShadow='0 4px 12px rgba(2...
+         ╵                                 [32m~~~~~[0m
+
+  Error occurs in the template of component TelaInicialComponent.
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.ts:43:15:
+[37m      43 │   templateUrl: [32m'./tela-inicial.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2531: Object is possibly 'null'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.html:49:52:
+[37m      49 │ ...enter)="$event.currentTarget.[32mstyle[37m.boxShadow='0 4px 12px rgba(2...
+         ╵                                 [32m~~~~~[0m
+
+  Error occurs in the template of component TelaInicialComponent.
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.ts:43:15:
+[37m      43 │   templateUrl: [32m'./tela-inicial.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'style' does not exist on type 'EventTarget'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.html:50:52:
+[37m      50 │ ...       (mouseleave)="$event.currentTarget.[32mstyle[37m.boxShadow='none'">
+         ╵                                              [32m~~~~~[0m
+
+  Error occurs in the template of component TelaInicialComponent.
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.ts:43:15:
+[37m      43 │   templateUrl: [32m'./tela-inicial.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2531: Object is possibly 'null'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.html:50:52:
+[37m      50 │ ...       (mouseleave)="$event.currentTarget.[32mstyle[37m.boxShadow='none'">
+         ╵                                              [32m~~~~~[0m
+
+  Error occurs in the template of component TelaInicialComponent.
+
+    src/app/telas/cliente/tela-inicial/tela-inicial.ts:43:15:
+[37m      43 │   templateUrl: [32m'./tela-inicial.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+Watch mode enabled. Watching for file changes...
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m     
+[1mInitial chunk files[22m [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
+[32mmain.js[39m             [2m | [22m[2mmain[22m            [2m | [22m[36m671.51 kB[39m[2m | [22m
+[32mstyles.css[39m          [2m | [22m[2mstyles[22m          [2m | [22m [36m95 bytes[39m[2m | [22m
+
+[1m [22m                   [2m | [22m[1mInitial total[22m   [2m | [22m[1m671.61 kB[22m
+
+
+[35mServer bundles[39m      
+[1mInitial chunk files[22m [2m | [22m[1mNames[22m           [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m     [2m | [22m[2mmain.server[22m     [2m | [22m[36m672.78 kB[39m[2m | [22m
+[32mserver.mjs[39m          [2m | [22m[2mserver[22m          [2m | [22m  [36m1.84 kB[39m[2m | [22m
+[32mpolyfills.server.mjs[39m[2m | [22m[2mpolyfills.server[22m[2m | [22m[36m268 bytes[39m[2m | [22m
+
+Application bundle generation complete. [2.699 seconds] - 2026-06-10T19:11:03.142Z
+
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m675.98 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m677.25 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.798 seconds] - 2026-06-10T19:11:22.020Z
+
+Component update sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m678.53 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m679.81 kB[39m[2m | [22m
+
+Application bundle generation complete. [1.880 seconds] - 2026-06-10T19:21:08.722Z
+
+Component update sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m678.82 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m680.09 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.834 seconds] - 2026-06-10T19:21:12.504Z
+
+Component update sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m678.86 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m680.14 kB[39m[2m | [22m
+
+Application bundle generation complete. [1.945 seconds] - 2026-06-10T19:27:33.087Z
+
+Page reload sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m679.01 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m680.29 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.660 seconds] - 2026-06-10T19:27:37.011Z
+
+Page reload sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m679.77 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m681.05 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.733 seconds] - 2026-06-10T19:27:42.204Z
+
+Component update sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m679.91 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m681.19 kB[39m[2m | [22m
+
+Application bundle generation complete. [1.248 seconds] - 2026-06-10T19:33:19.372Z
+
+Page reload sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m679.98 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m681.26 kB[39m[2m | [22m
+
+Application bundle generation complete. [0.367 seconds] - 2026-06-10T19:33:25.413Z
+
+Page reload sent to client(s).
+[33m❯[39m Changes detected. Rebuilding...
+[32m✔[39m Changes detected. Rebuilding...
+[35mBrowser bundles[39m    
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m       [2m | [22m[36m680.25 kB[39m[2m | [22m
+
+
+[35mServer bundles[39m     
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m      [2m | [22m [1mRaw size[22m
+[32mmain.server.mjs[39m    [2m | [22m[2mmain.server[22m[2m | [22m[36m681.52 kB[39m[2m | [22m
+
+Application bundle generation complete. [2.524 seconds] - 2026-06-10T19:41:39.705Z
+
+[2m16:41:43[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32m✨ new dependencies optimized: [33mrxjs/operators[32m[39m
+[2m16:41:43[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[1m[31m[2m16:41:43[22m[1m [31m[1m[vite][22m[1m[31m [31m[2m(ssr)[22m[1m[31m [31mError when evaluating SSR module /main.server.mjs?timestamp=1781120499741: There is a new version of the pre-bundle for "C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/.angular/cache/21.2.11/flashfood/vite/deps_ssr/@angular_core.js?v=75b96e09", a page reload is going to ask for it.[31m
+      at throwOutdatedRequest (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:8959:32)
+      at LoadPluginContext.load (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:8930:118)
+      at EnvironmentPluginContainer.load (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:28763:56)
+      at loadAndTransform (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:22628:43)
+      at doTransform (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:22597:17)
+      at async fetchModule (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:33997:15)
+      at async handleInvoke (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:25837:21)
+      at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:25892:13)[39m[22m
+[1m[31mAn unhandled exception occurred: There is a new version of the pre-bundle for "C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/.angular/cache/21.2.11/flashfood/vite/deps_ssr/@angular_core.js?v=75b96e09", a page reload is going to ask for it.
+See "C:\Users\vinil\AppData\Local\Temp\ng-pMpajZ\angular-errors.log" for further details.[39m[22m
+uncaughtException Error: There is a new version of the pre-bundle for "C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/.angular/cache/21.2.11/flashfood/vite/deps_ssr/@angular_core.js?v=75b96e09", a page reload is going to ask for it.
+    at throwOutdatedRequest (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:8959:32)
+    at LoadPluginContext.load (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:8930:118)
+    at EnvironmentPluginContainer.load (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:28763:56)
+    at loadAndTransform (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:22628:43)
+    at doTransform (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:22597:17)
+    at async fetchModule (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:33997:15)
+    at async handleInvoke (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:25837:21)
+    at async EventEmitter.listenerForInvokeHandler (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:25892:13) {
+  code: 'ERR_OUTDATED_OPTIMIZED_DEP',
+  runnerError: Error: RunnerError
+      at reviveInvokeError (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:476:64)
+      at Object.invoke (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:549:11)
+      at async SSRCompatModuleRunner.getModuleInformation (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:1086:7)
+      at async request (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:1103:83)
+      at async eval (C:\Users\vinil\Downloads\dark-kitchen-test\dark-kitchen-master\src\app\login\cadastro\cadastro.ts:1:1)
+      at async ESModulesEvaluator.runInlinedModule (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:913:3)
+      at async SSRCompatModuleRunner.directRequest (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:1146:59)
+      at async SSRCompatModuleRunner.directRequest (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/chunks/config.js:15111:22)
+      at async SSRCompatModuleRunner.cachedRequest (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:1053:73)
+      at async SSRCompatModuleRunner.import (file:///C:/Users/vinil/Downloads/dark-kitchen-test/dark-kitchen-master/node_modules/vite/dist/node/module-runner.js:1014:10)
+}
+[2m16:42:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mrxjs/operators[32m[39m
+[2m16:42:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m

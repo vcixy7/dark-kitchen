@@ -1,0 +1,78 @@
+﻿<section class="perfil-restaurante">
+  <div class="perfil-header">
+    <div>
+      <p class="perfil-kicker">Perfil do restaurante</p>
+      <h1>Altere as informações do seu restaurante</h1>
+      <p class="perfil-subtitle">Ajuste os dados do negócio e troque a foto localmente.</p>
+    </div>
+    <div class="status-banner" [ngClass]="statusTipo">
+      {{ statusMensagem }}
+    </div>
+  </div>
+
+  <div class="perfil-grid">
+    <div class="foto-panel">
+      <div class="foto-preview">
+        <img *ngIf="fotoRestaurante" [src]="fotoRestaurante" alt="Foto do restaurante" />
+        <div *ngIf="!fotoRestaurante" class="foto-vazia">
+          <span>📷</span>
+          <p>Selecione uma foto local para exibir aqui.</p>
+        </div>
+      </div>
+
+      <label class="upload-foto">
+        <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFotoSelecionada($event)" />
+        <span>📁 Escolher foto local</span>
+      </label>
+
+      <p class="foto-info">Formatos aceitos: JPG, PNG e WEBP. GIF não permitido. Máximo 2MB.</p>
+    </div>
+
+    <div class="form-panel">
+      <div class="informacoes-basicas">
+        <h2>Informações básicas</h2>
+        <label>
+          Nome do restaurante
+          <input [(ngModel)]="nomeRestaurante" />
+        </label>
+        <label>
+          Email
+          <input type="email" [(ngModel)]="email" />
+        </label>
+        <label>
+          Telefone
+          <input [(ngModel)]="telefone" />
+        </label>
+        <label>
+          Descrição
+          <textarea rows="5" [(ngModel)]="descricao"></textarea>
+        </label>
+      </div>
+
+      <div class="endereco">
+        <h2>Endereço</h2>
+        <label>
+          Rua e número
+          <input [(ngModel)]="rua" />
+        </label>
+        <label>
+          Cidade
+          <input [(ngModel)]="cidade" />
+        </label>
+        <label>
+          Estado
+          <input [(ngModel)]="estado" />
+        </label>
+        <label>
+          CEP
+          <input [(ngModel)]="cep" />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="acoes-perfil">
+    <button class="salvar-alteracoes" type="button" (click)="salvarAlteracoes()">💾 Salvar alterações</button>
+    <button class="voltar-perfil" type="button" (click)="salvar.emit()">← Voltar</button>
+  </div>
+</section>
